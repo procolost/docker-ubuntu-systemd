@@ -1,16 +1,15 @@
-FROM ubuntu:jammy
+FROM ubuntu:20.04
 
 LABEL maintainer="Robert de Bock <robert@meinit.nl>"
 LABEL build_date="2022-05-10"
 
-ENV container docker
 
 # Enable apt repositories.
 RUN sed -i 's/# deb/deb/g' /etc/apt/sources.list
-
+ 
 # Enable systemd.
 RUN apt-get update ; \
-    apt-get install -y systemd systemd-sysv ; \
+    apt-get install -y systemd systemd-sysv build-essential systemd git wget curl python3-dev man man-db  ; \
     apt-get clean ; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ; \
     cd /lib/systemd/system/sysinit.target.wants/ ; \
@@ -24,7 +23,7 @@ RUN apt-get update ; \
     rm -f /lib/systemd/system/anaconda.target.wants/* ; \
     rm -f /lib/systemd/system/plymouth* ; \
     rm -f /lib/systemd/system/systemd-update-utmp*
-
-VOLUME [ "/sys/fs/cgroup" ]
+RUN wget "https://raw.githubusercontent.com/ton-blockchain/mytonctrl/master/scripts/install.sh"
+#VOLUME [ "/sys/fs/cgroup" ]
 
 CMD ["/lib/systemd/systemd"]
